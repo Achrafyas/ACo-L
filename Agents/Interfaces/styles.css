@@ -1,0 +1,17 @@
+div {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+body {
+  background-color: lightblue;
+}
+
+.plot-container {
+    display: flex;
+    width: 50%;
+}
+
+.plot {
+    flex: 1;
+}

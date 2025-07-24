@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+     http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <graph id="G" edgedefault="undirected">
+    <node id="age0"/>
+    <node id="age1"/>
+    <node id="age2"/>
+    <node id="age3"/>
+    <node id="age4"/>
+    <node id="age5"/>
+    <node id="age6"/>
+    <node id="age7"/>
+    <node id="age8"/>
+    <node id="age9"/>
+    <node id="age10"/>
+    <edge source="age0" target="age2"/>
+    <edge source="age1" target="age2"/>
+    <edge source="age2" target="age3"/>
+    <edge source="age3" target="age5"/>
+    <edge source="age3" target="age4"/>
+    <edge source="age4" target="age6"/>
+    <edge source="age6" target="age5"/>
+    <edge source="age5" target="age7"/>
+    <edge source="age6" target="age8"/>
+    <edge source="age8" target="age7"/>
+    <edge source="age8" target="age9"/>
+    <edge source="age8" target="age10"/>
+  </graph>
+</graphml>

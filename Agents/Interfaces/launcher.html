@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Launcher Agent test file</title>
+    <style>
+        body {
+          background-color: #F0F0F0;
+          margin: 0px;
+          font-family:'Trebuchet MS';
+          font-size: 20px;
+        }
+
+        .top-banner {
+            display: flex;
+            background-color: #0096FF;
+            padding-left: 10px;
+            padding-right: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-banner-text {
+            font-family:'Trebuchet MS';
+            font-size: 18px;
+            color: white;
+        }
+
+        .top-banner-element {
+            font-family:'Trebuchet MS';
+        }
+
+        .button {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 10px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .submit_button {
+            background-color: #0096FF;
+            border: none;
+            color: white;
+            padding: 10px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .upload-container {
+            display: flex;
+        }
+
+        .upload-title {
+            margin-right: 10px;
+        }
+
+        .creation-method-radio-button-container {
+            padding: 20px;
+        }
+
+        .creation-method-radio-button {
+            font-size: 30px;
+        }
+
+        .agent-creation {
+            padding: 15px;
+            padding-left: 70px;
+        }
+
+        .element {
+            padding: 10px;
+        }
+
+        .text-input {
+            font-size: 20px;
+        }
+
+        .file_input {
+            font-size: 20px;
+        }
+
+        .dataset-radio {
+            padding-left: 10px;
+        }
+
+        .dataset-first {
+            padding-bottom:10px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="top-banner">
+        <div class="top-banner-element top-banner-text">
+            Agent name : {{ agent.name }}
+        </div>
+
+        <div class="top-banner-element">
+            <a href="/agent/stop">
+               <button class="button">Stop</button>
+            </a>
+        </div>
+    </div>
+    <form role="form" method="post" action="/submit" enctype="multipart/form-data">
+        <div class="creation-method-radio-button-container">
+            <input type="radio" name="agentCreationMethod" value="graph" onclick="showHideAgentCreation('graph')"><label class="creation-method-radio-button">Create agent by uploading Network Graph</label><br>
+        </div>
+        <div id="agent-creation-graph" class="agent-creation" style="display: none;">
+            <div class="upload-container element">
+                <div class="upload-title">
+                    Upload GraphML graph :
+                </div>
+                <div>
+                    <input type="file" class="file_input" name="graphInputFile">
+                </div>
+            </div>
+            <div class="upload-container element">
+                <div class="upload-title">
+                    Enter the node ID of the agent :
+                </div>
+                <input type="text" class="text-input" name="nodeId_graph">
+            </div>
+            <div class="upload-container element">
+                <div class="upload-title">
+                    Enter the port for the agent's interface :
+                </div>
+                <input type="text" class="text-input" name="port_graph">
+            </div>
+            <div class="upload-container element">
+                <div class="upload-title">
+                    Upload initial model weights :
+                </div>
+                <input type="file" class="file_input" name="modelFile_graph">
+            </div>
+            <div class="element">
+                Choose the dataset :
+            </div>
+            <div class="dataset-radio">
+                <div class="dataset-first">
+                    <input type="radio" name="datasetSelection_graph" value="mnist_graph" checked>MNIST<br>
+                </div>
+                <input type="radio" name="datasetSelection_graph" value="fmnist_graph">Fashion MNIST<br>
+            </div>
+            <div class="element">
+                Choose the model :
+            </div>
+            <div class="dataset-radio">
+                <div class="dataset-first">
+                    <input type="radio" name="modelSelection_graph" value="mlp_graph" checked>MLP<br>
+                </div>
+                <input type="radio" name="modelSelection_graph" value="cnn_graph">CNN<br>
+            </div>
+            <div class="element" style="padding-top:25px;">
+                <button type="submit" class="submit_button">Submit</button>
+            </div>
+        </div>
+        <div class="creation-method-radio-button-container">
+            <input type="radio" name="agentCreationMethod" value="no-graph" onclick="showHideAgentCreation('no-graph')"><label class="creation-method-radio-button">Create agent without Network Graph</label><br>
+        </div>
+        <div id="agent-creation-no-graph" class="agent-creation" style="display: none;">
+            <div class="upload-container element">
+                <div class="upload-title">
+                    Enter the name of the agent (without the server name) :
+                </div>
+                <div>
+                    <input type="text" class="text-input" name="nodeId_no_graph">
+                </div>
+            </div>
+            <div class="upload-container element">
+                <div class="upload-title">
+                    Enter the list of neighbours of the agent (separated by commas) :
+                </div>
+                <div>
+                    <input type="text" class="text-input" name="agent_neighbours_no_graph" style="min-width:300px;">
+                </div>
+            </div>
+            <div class="upload-container element">
+                <div class="upload-title">
+                    Enter the port for the agent's interface :
+                </div>
+                <input type="text" class="text-input" name="port_no_graph">
+            </div>
+            <!--
+            <div>
+                <input type="radio" name="datasetUploadMethod" value="file" onclick="showHideDiv('file')" checked>Upload dataset from device<br>
+                <input type="radio" name="datasetUploadMethod" value="url" onclick="showHideDiv('url')">Upload dataset from URL<br>
+            </div>
+
+            <div id="fileDataset">
+                <div>
+                    Upload dataset file :
+                </div>
+                <input type="file" name="datasetFile">
+            </div>
+            <div id="urlDataset" style="display: none;">
+                <div>
+                    Dataset URL :
+                </div>
+                <input type="text" name="datasetUrl">
+            </div>
+            -->
+            <div class="upload-container element">
+                <div class="upload-title">
+                    Upload initial model weights :
+                </div>
+                <div>
+                    <input type="file" class="file_input" name="modelFile_no_graph">
+                </div>
+            </div>
+            <div class="element">
+                Choose the dataset :
+            </div>
+            <div class="dataset-radio">
+                <div class="dataset-first">
+                    <input type="radio" name="datasetSelection_no_graph" value="mnist_no_graph" checked>MNIST<br>
+                </div>
+                <input type="radio" name="datasetSelection_no_graph" value="fmnist_no_graph">Fashion MNIST<br>
+            </div>
+            <div class="element">
+                Choose the model :
+            </div>
+            <div class="dataset-radio">
+                <div class="dataset-first">
+                    <input type="radio" name="modelSelection_no_graph" value="mlp_no_graph" checked>MLP<br>
+                </div>
+                <input type="radio" name="modelSelection_no_graph" value="cnn_no_graph">CNN<br>
+            </div>
+            <div class="element" style="padding-top:25px;">
+                <button type="submit" class="submit_button">Submit</button>
+            </div>
+        </div>
+    </form>
+    <script>
+    function showHideAgentCreation(val)
+    {
+        if(val == 'graph')
+        {
+            document.getElementById('agent-creation-graph').style.display='block';
+            document.getElementById('agent-creation-no-graph').style.display='none';
+        }
+        if(val == 'no-graph')
+        {
+            document.getElementById('agent-creation-no-graph').style.display='block';
+            document.getElementById('agent-creation-graph').style.display='none';
+        }
+    }
+
+    function showHideDiv(val)
+    {
+        if(val == 'file')
+        {
+            document.getElementById('fileDataset').style.display='block';
+            document.getElementById('urlDataset').style.display='none';
+        }
+        if(val == 'url')
+        {
+            document.getElementById('urlDataset').style.display='block';
+            document.getElementById('fileDataset').style.display='none';
+        }
+    }
+    </script>
+</body>
+</html>

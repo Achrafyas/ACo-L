@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ agent.name }} Interface</title>
+    <meta http-equiv="refresh" content="4" >
+    <style>
+        body {
+          background-color: #F0F0F0;
+          margin: 0px;
+          font-family:'Trebuchet MS';
+        }
+
+        .plot-container {
+            display: flex;
+        }
+
+        .accuracy-plot {
+            flex: 1;
+            padding: 10px;
+            padding-right:5px;
+        }
+
+        .loss-plot {
+            flex: 1;
+            padding: 10px;
+            padding-left:5px;
+        }
+
+        .button {
+          background-color: #f44336;
+          border: none;
+          color: white;
+          padding: 10px 32px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 16px;
+        }
+
+        .top-banner {
+            display: flex;
+            background-color: #0096FF;
+            padding-left: 10px;
+            padding-right: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-banner-text {
+            font-family:'Trebuchet MS';
+            font-size: 18px;
+            color: white;
+        }
+
+        .top-banner-element {
+            font-family:'Trebuchet MS';
+        }
+
+        .title {
+            font-size: 30px;
+        }
+
+        .bottom-of-page {
+            display: flex;
+        }
+
+        .right-column {
+            flex: 1;
+            padding: 10px;
+            padding-left:5px;
+            padding-top: 0px;
+        }
+
+        .left-column {
+            flex: 1;
+            padding: 10px;
+            padding-right:5px;
+            padding-top: 0px;
+        }
+
+        .available-agents {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            min-height: 40px;
+        }
+
+        .message-history {
+            background-color: white;
+            padding: 10px;
+            min-height: 40px;
+        }
+
+    </style>
+</head>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<body>
+    <div class="top-banner">
+        <div class="top-banner-element top-banner-text">
+            Agent name : {{ agent.name }}
+        </div>
+
+        <div class="top-banner-element">
+            <a href="/agent/stop">
+               <button class="button">Stop</button>
+            </a>
+        </div>
+    </div>
+    <div id="plot_container" class="plot-container">
+        <div id="accuracy_plot" class="accuracy-plot"></div>
+        <div id="loss_plot" class="loss-plot"></div>
+    </div>
+    <div class="bottom-of-page">
+        <div class="left-column">
+            <div class="available-agents">
+                <b class="title">
+                    Available neighbours :
+                </b>
+                <ol>
+                 {% for b in available_agents %}
+                     <li> {{ b }} </li>
+                 {% endfor %}
+                 </ol>
+            </div>
+            <div class="message-history">
+                <b class="title">
+                    Message History :
+                </b>
+                <div style="white-space: pre-line" class="message-history">
+                    {{ message_history }}
+                </div>
+            </div>
+        </div>
+        <div class="right-column">
+            <div id="message_plot"></div>
+        </div>
+    </div>
+    <script>
+    console.log({{ received_message_statistics }});
+    console.log({{ test_accuracies }});
+    console.log({{ test_losses }});
+    var epoch_array = {{ epochs }};
+    var test_accuracies_array = {{ test_accuracies }};
+    var train_accuracies_array = {{ train_accuracies }};
+    var test_losses_array = {{ test_losses }};
+    var train_losses_array = {{ train_losses }};
+    var active_neighbours_recv = {{ received_message_statistics }};
+    var active_neighbours_send = {{ sent_message_statistics }};
+    var nb_agents = {{ nb_available_agents }};
+
+    agents_nb_array = [];
+    for(let i = 0; i < nb_agents; i = i + 1) {
+        agents_nb_array.push(i + 1);
+    }
+
+    var test_acc_trace = {
+      x: epoch_array,
+      y: test_accuracies_array,
+      name: 'Test Accuracy',
+      mode: 'lines+markers',
+      type: 'scatter'
+    };
+
+    var train_acc_trace = {
+      x: epoch_array,
+      y: train_accuracies_array,
+      name: 'Training Accuracy',
+      mode: 'lines+markers',
+      type: 'scatter'
+    };
+
+    var accuracy_data = [test_acc_trace, train_acc_trace];
+
+    var test_loss_trace = {
+      x: epoch_array,
+      y: test_losses_array,
+      name: 'Test Loss',
+      mode: 'lines+markers',
+      type: 'scatter'
+    };
+
+    var train_loss_trace = {
+      x: epoch_array,
+      y: train_losses_array,
+      name: 'Training Loss',
+      mode: 'lines+markers',
+      type: 'scatter'
+    };
+
+    var loss_data = [test_loss_trace, train_loss_trace];
+
+    // Define Layout
+    var acc_layout = {
+      title: {
+        text:'Evolution of Accuracy'
+      },
+      xaxis: {
+        title: {
+          text: 'Training Rounds',
+        },
+      },
+      yaxis: {
+        title: {
+          text: 'Accuracy (%)',
+        }
+      }
+    };
+
+    var loss_layout = {
+      title: {
+        text:'Evolution of Loss'
+      },
+      xaxis: {
+        title: {
+          text: 'Training Rounds',
+        },
+      },
+      yaxis: {
+        title: {
+          text: 'Loss',
+        }
+      }
+    };
+
+    // Display using Plotly
+    Plotly.newPlot("accuracy_plot", accuracy_data, acc_layout);
+    Plotly.newPlot("loss_plot", loss_data, loss_layout);
+
+    var trace1 = {
+      x: agents_nb_array,
+      y: active_neighbours_recv,
+      name: 'Sent Messages',
+      type: 'bar'
+    };
+
+    var trace2 = {
+      x: agents_nb_array,
+      y: active_neighbours_send,
+      name: 'Received Messages',
+      type: 'bar'
+    };
+
+    var data = [trace1, trace2];
+
+    var layout = {barmode: 'group'};
+
+    Plotly.newPlot("message_plot", data, layout);
+
+    </script>
+</body>
+</html>

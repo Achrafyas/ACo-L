@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <graph id="G" edgedefault="undirected">
+    <!-- three nodes -->
+    <node id="0"/>
+    <node id="1"/>
+    <node id="2"/>
+    <!-- edges: 0 is the center of the star -->
+    <edge id="e0" source="0" target="1"/>
+    <edge id="e1" source="0" target="2"/>
+  </graph>
+</graphml>
